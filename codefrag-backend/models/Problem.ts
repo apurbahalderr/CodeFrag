@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ITestCase {
   input: string;
@@ -8,7 +8,7 @@ export interface ITestCase {
 export interface IProblem extends Document {
   title: string;
   description: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   constraints: string;
   testCases: ITestCase[];
   starterCode: {
@@ -26,14 +26,18 @@ const TestCaseSchema = new Schema<ITestCase>({
 const ProblemSchema = new Schema<IProblem>({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  difficulty: { type: String, enum: ['easy', 'medium', 'hard'], required: true },
-  constraints: { type: String, default: '' },
+  difficulty: {
+    type: String,
+    enum: ["easy", "medium", "hard"],
+    required: true,
+  },
+  constraints: { type: String, default: "" },
   testCases: { type: [TestCaseSchema], required: true },
   starterCode: {
-    cpp: { type: String, default: '' },
-    java: { type: String, default: '' },
+    cpp: { type: String, default: "" },
+    java: { type: String, default: "" },
   },
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model<IProblem>('Problem', ProblemSchema);
+export default mongoose.model<IProblem>("Problem", ProblemSchema);
