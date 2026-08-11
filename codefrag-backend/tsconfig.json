@@ -33,6 +33,7 @@
     // "noPropertyAccessFromIndexSignature": true,
 
     // Recommended Options
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "jsx": "react-jsx",
     "verbatimModuleSyntax": false,
