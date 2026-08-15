@@ -12,7 +12,7 @@ async function runJavaHelloWorld(): Promise<string> {
   });
 
   await docker.run(
-    'eclipse-temurin:17-jdk',
+    'eclipse-temurin:17',
     ['java', '-version'],
     stream,
     { Tty: false }
@@ -20,3 +20,6 @@ async function runJavaHelloWorld(): Promise<string> {
 
   return output;
 }
+runJavaHelloWorld()
+  .then((output) => console.log('OUTPUT:', output))
+  .catch((err) => console.error('ERROR:', err));
