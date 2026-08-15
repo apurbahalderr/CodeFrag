@@ -1,14 +1,29 @@
-import fs from 'node:fs/promises';
-import os from 'node:os';
-import path from 'node:path';
-import { randomUUID } from 'node:crypto';
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import Docker from "dockerode";
+import { PassThrough } from "node:stream";
 
-async function runJavaSubmission(code: string, input: string): Promise<string>{
-  const tempDir = path.join(os.tmpdir(), randomUUID());
+const docker = new Docker();
+async function runJavaSubmission(code: string, input: string): Promise<string> {
+  const tempDir = path.join(os.tmpdir(), Date.now().toString());
   await fs.mkdir(tempDir, { recursive: true });
-  const javaFilePath = path.join(tempDir, 'Solution.java');
+  const javaFilePath = path.join(tempDir, "Solution.java");
   await fs.writeFile(javaFilePath, code);
   console.log(`Java file created at: ${javaFilePath}`);
+  const stream = new PassThrough();
+  let output = "";
+
+  stream.on("data", (chunk) => {
+    output += chunk.toString();
+  });
+
+  await docker.run(
+    "eclipse-temurin:17",
+    ["bash", "-c", "javac /code/Solution.java && java -cp /code Solution"],
+    stream,
+    { HostConfig: { Binds: [`${tempDir}:/code`] }, Tty: false },
+  );
 
   return javaFilePath;
 }
