@@ -23,13 +23,12 @@ const LANGUAGE_CONFIG = {
 
 const docker = new Docker();
 
-async function runSubmission(
+export async function runSubmission(
   code: string,
   input: string,
   language: "cpp" | "java",
 ): Promise<string> {
   const tempDir = path.join(os.tmpdir(), crypto.randomUUID());
-  const TIMEOUT_MS = 10000;
   try {
     const config = LANGUAGE_CONFIG[language];
     await fs.mkdir(tempDir, { recursive: true });
@@ -87,13 +86,3 @@ async function runSubmission(
     await fs.rm(tempDir, { recursive: true, force: true });
   }
 }
-runSubmission(
-  `public class Solution {
-    public static void main(String[] args) {
-      while (true) {}
-    }
-  }`,
-  "",
-  "java"
-).then((r) => console.log("SHOULD NOT REACH:", r))
- .catch((e) => console.log("CAUGHT TIMEOUT:", e.message));
