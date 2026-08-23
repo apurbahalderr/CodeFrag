@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { SubmitSchema } from '../schemas/submissionSchemas';
 import Problem from '../models/Problem';
 import Submission from '../models/Submission';
-import { evaluateSubmission } from '../judge/evaluateSubmission';
+import { evaluateSubmission, TestResult } from '../judge/evaluateSubmission';
 
 export const submit = async (req: Request, res: Response) => {
   try {
@@ -20,6 +20,9 @@ export const submit = async (req: Request, res: Response) => {
     if (!problem) {
       return res.status(404).json({ message: "Problem not found" });
     }
+    const testResults: TestResult[] = await evaluateSubmission(code, language, problem.testCases);
+
+    const allPassed = testResults.every(test => test.passed);
 
   } catch (error) {
     console.error(error);
